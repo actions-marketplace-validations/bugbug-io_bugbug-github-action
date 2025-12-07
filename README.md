@@ -3,6 +3,7 @@
 </p>
 
 ## BugBug Cloud Runner
+
 Official GitHub action to run tests and suites on BugBug Cloud.
 
 > [!IMPORTANT]
@@ -27,7 +28,7 @@ Official GitHub action to run tests and suites on BugBug Cloud.
 
 `variables`
 
-- **Description**: Override variable during a single run. Pass all variables in a format: `key1=value1,key2=value2`.
+- **Description**: Override variable during a single run. Pass all variables in a format: `key1=value1,key2=value2`. All overridden variables should be defined in BugBug as well.
 - **Required**: No
 
 `debug`
@@ -41,6 +42,16 @@ Official GitHub action to run tests and suites on BugBug Cloud.
 - **Description**: Path to the output file with the test results (junit).
 - **Required**: No
 - **Default**: `test-results.xml`
+
+### Outputs
+
+`suiteRunId`
+
+- **Description**: The Run ID when executing passing a suiteId.
+
+`testRunId`
+
+- **Description**: The Run ID when executing passing a testId.
 
 ### Example Usage
 
@@ -56,7 +67,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run BugBug Cloud Runner
-        uses: bugbug-io/bugbug-github-action@v1.0.2
+        id: run-bugbug-tests
+        uses: bugbug-io/bugbug-github-action@v1.2.2
         with:
           apiToken: ${{ secrets.BUGBUG_API_TOKEN }}
           testId: "Your BugBug test ID"
@@ -64,4 +76,9 @@ jobs:
           profileName: "Your BugBug profile name"
           variables: "key1=value1,key2=value2"
           debug: "true"
+
+      - name: Getting Run Output
+        run: |
+          echo "Suite Run ID: ${{ steps.run-bugbug-tests.outputs.suiteRunId }}"
+          echo "Test Run ID: ${{ steps.run-bugbug-tests.outputs.testRunId }}"
 ```
